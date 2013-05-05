@@ -1,0 +1,34 @@
+﻿@model Logic.Domain.Product
+
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <title>@Model.Name</title>
+    <link href="@Url.Content("~/Content/bootstrap.css")" rel="Stylesheet" type="text/css" />
+</head>
+<body>
+    <div class="row">
+        <div class="span5">
+            @{ string path = Path.Combine ("~/Content/ProductImg", Model.ImageName ?? "default.jpg"); }
+            <img src="@Url.Content(path)"  class="thumbnail"/>
+        </div>
+        <div class="span5">
+        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
+        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
+        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
+        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
+        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
+        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+        <h4>Описание</h4>
+        @Model.Description
+        </div>
+    </div>
+</body>
+</html>

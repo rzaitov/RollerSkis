@@ -40,26 +40,27 @@ namespace RollerSkis.Controllers
 			ProductType type = string.IsNullOrEmpty (productType) ? ProductType.RollerSkis : productTypes[productType];
 			bool searchMultipleModels = string.IsNullOrEmpty (modelName);
 
-			List<Product> searchResult = new List<Product>();
-			if (searchMultipleModels)
-			{
-				searchResult.AddRange (ApplicationContext.ProductService.GetProductsByType (type));
-			}
-			else
-			{
-				Product p = ApplicationContext.ProductService.GetProduct (type, modelName);
-				if (p != null)
-				{
-					searchResult.Add (p);
-				}
-			}
+			ViewResult view = searchMultipleModels ? view = GetProductSearchResult (type) : ProductView (type, modelName);
+			return view;
+		}
+
+		private ViewResult GetProductSearchResult (ProductType type)
+		{
+			List<Product> searchResult = new List<Product> ();
+			searchResult.AddRange (ApplicationContext.ProductService.GetProductsByType (type));
 
 			ProductsPageModel model = new ProductsPageModel
 			{
 				Products = searchResult
 			};
 
-			return View (model);
+			return View ("SearchResult", model);
+		}
+
+		private ViewResult ProductView (ProductType exactType, string modelName)
+		{
+			Product p = ApplicationContext.ProductService.GetProduct (exactType, modelName);
+			return View ("Product", p);
 		}
 	}
 }
