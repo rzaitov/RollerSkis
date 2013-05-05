@@ -54,33 +54,12 @@ WHERE
 
 					using (SqlDataReader reader = cmd.ExecuteReader ())
 					{
-						int idOridinal = -1;
-						int descriptionOridinal = -1;
-						int imageNameOridinal = -1;
-						int nameOridinal = -1;
-						int priceOridinal = -1;
-						int productTypeOridinal = -1;
-
-						if (reader.HasRows)
-						{
-							idOridinal = reader.GetOrdinal ("id");
-							descriptionOridinal = reader.GetOrdinal ("description");
-							imageNameOridinal = reader.GetOrdinal ("image_name");
-							nameOridinal = reader.GetOrdinal ("name");
-							priceOridinal = reader.GetOrdinal ("price");
-							productTypeOridinal = reader.GetOrdinal ("product_type");
-						}
+						ProductFieldOridinal pfo = new ProductFieldOridinal (reader);
+						pfo.LoadOriginals ();
 
 						while (reader.Read ())
 						{
-							Product p = new Product ();
-							p.Id = reader.GetInt32 (idOridinal);
-							p.Name = reader.GetString (nameOridinal);
-							p.Description = reader.IsDBNull (descriptionOridinal) ? null : reader.GetString (descriptionOridinal);
-							p.ImageName = reader.IsDBNull (imageNameOridinal) ? null : reader.GetString (imageNameOridinal);
-							p.Price = reader.GetDecimal (priceOridinal);
-							p.ProductType = (ProductType)reader.GetInt32 (productTypeOridinal);
-
+							Product p = pfo.GetProduct ();
 							products.Add (p);
 						}
 					}
@@ -90,10 +69,42 @@ WHERE
 			return products;
 		}
 
-		public Product GetProduct (ProductType type, string name)
+		public Product GetProduct (ProductType exactType, string name)
 		{
+			string cmdText = string.Format (@"
+SELECT {0}
+FROM Product AS P
+WHERE
+	P.[product_type] = @product_type
+	AND P.[name] = @product_name
+", GetEscapedFieldNames("P"));
+			
+			Product foundProduct = null;
 
-			throw new NotImplementedException ();
+			using (SqlConnection connection = new SqlConnection (_connectionString))
+			{
+				using (SqlCommand cmd = new SqlCommand (cmdText, connection))
+				{
+					cmd.CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue ("@product_type", (int)exactType);
+					cmd.Parameters.AddWithValue ("@product_name", name);
+
+					connection.Open ();
+
+					using (SqlDataReader reader = cmd.ExecuteReader ())
+					{
+						ProductFieldOridinal pfo = new ProductFieldOridinal (reader);
+						pfo.LoadOriginals ();
+
+						if (reader.Read ())
+						{
+							foundProduct = pfo.GetProduct();
+						}
+					}
+				}
+			}
+
+			return foundProduct;
 		}
 
 		private string GetEscapedFieldNames(string tableName)
@@ -102,6 +113,53 @@ WHERE
 			string result = string.Join(", ", fields);
 
 			return result;
+		}
+	}
+
+	internal class ProductFieldOridinal
+	{
+		public int idOridinal = -1;
+		public int descriptionOridinal = -1;
+		public int imageNameOridinal = -1;
+		public int nameOridinal = -1;
+		public int priceOridinal = -1;
+		public int productTypeOridinal = -1;
+
+		private SqlDataReader _reader;
+
+		public ProductFieldOridinal (SqlDataReader reader)
+		{
+			_reader = reader;
+		}
+
+		public bool LoadOriginals ()
+		{
+			bool hasRows = _reader.HasRows;
+			if (hasRows)
+			{
+				idOridinal = _reader.GetOrdinal ("id");
+				descriptionOridinal = _reader.GetOrdinal ("description");
+				imageNameOridinal = _reader.GetOrdinal ("image_name");
+				nameOridinal = _reader.GetOrdinal ("name");
+				priceOridinal = _reader.GetOrdinal ("price");
+				productTypeOridinal = _reader.GetOrdinal ("product_type");
+			}
+
+			return hasRows;
+		}
+
+		public Product GetProduct ()
+		{
+			Product p = new Product ();
+
+			p.Id = _reader.GetInt32 (idOridinal);
+			p.Name = _reader.GetString (nameOridinal);
+			p.Description = _reader.IsDBNull (descriptionOridinal) ? null : _reader.GetString (descriptionOridinal);
+			p.ImageName = _reader.IsDBNull (imageNameOridinal) ? null : _reader.GetString (imageNameOridinal);
+			p.Price = _reader.GetDecimal (priceOridinal);
+			p.ProductType = (ProductType)_reader.GetInt32 (productTypeOridinal);
+
+			return p;
 		}
 	}
 }
