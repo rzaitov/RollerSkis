@@ -137,7 +137,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\Product.cshtml" />
+    <Content Include="Views\Shared\ProductItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
