@@ -1,0 +1,46 @@
+﻿@using Logic.Domain
+@model RollerSkis.Models.ProductsPageModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>GetSkis</title>
+    <link href="@Url.Content("~/Content/bootstrap.css")" rel="Stylesheet" type="text/css"
+</head>
+<body>
+    <div>
+        @{
+            int pCount = @Model.Products.Count;
+            int pIndex = 0;
+        }
+        @for (int row = 0; row < Math.Ceiling((double)pCount / 3); row++ )
+        {
+        <div class="row">
+            <ul class="thumbnails">
+            @for (int position = 0; (position < 3) && (pIndex < pCount); position++ )
+            {
+                Product p = Model.Products[pIndex++];
+                  <li class="span3">
+                      <div class="thumbnail span3">
+                        <h3>@p.Name</h3>
+                        @if (!string.IsNullOrWhiteSpace (p.ImageName))
+                        {
+                            <img src="@p.ImageName" alt=""/>
+                        }
+                      <div class="caption">
+                        <p>@p.Description</p>
+                      </div>
+                    </div>
+                  </li>
+            }
+            </ul>
+          </div>
+        }
+    </div>
+</body>
+</html>
