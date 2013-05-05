@@ -25,18 +25,7 @@
             @for (int position = 0; (position < 3) && (pIndex < pCount); position++ )
             {
                 Product p = Model.Products[pIndex++];
-                  <li class="span3">
-                      <div class="thumbnail span3">
-                        <h3>@p.Name</h3>
-                        @if (!string.IsNullOrWhiteSpace (p.ImageName))
-                        {
-                            <img src="@p.ImageName" alt=""/>
-                        }
-                      <div class="caption">
-                        <p>@p.Description</p>
-                      </div>
-                    </div>
-                  </li>
+                Html.RenderPartial ("Product", p);
             }
             </ul>
           </div>

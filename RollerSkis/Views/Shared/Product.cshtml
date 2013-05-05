@@ -1,0 +1,13 @@
+﻿@model Logic.Domain.Product
+<li class="span3">
+    <div class="thumbnail span3">
+        <h3>@Model.Name</h3>
+        @if (!string.IsNullOrWhiteSpace (@Model.ImageName))
+        {
+            <img src="@Model.ImageName" alt=""/>
+        }
+        <div class="caption">
+            <p>@Model.Description</p>
+        </div>
+    </div>
+</li>
