@@ -18,3 +18,11 @@ VALUES
 (5, 'XL150SC', 'XL150SC.jpg', 'The V2 Aero roller skis are the most versatile roller skis available. The large diameter pneumatic wheels can be used on surfaces where it’s impossible to roller ski on smaller diameter solid wheels. The skis can be used on dirt roads, limestone bicycle path’s, chip seal pavement and on grass. On normal pavement the pneumatic tires provide an extremely smooth ride.', 11370.00),
 (5, 'XL940C', 'xl940c.jpg', 'This is the XL style, all aluminum version of the very popular 940C combi. The rear wheel is harder than the rubber in the classic skis because the scrubbing motion in skating reduces tire life. The front ratchet wheel is narrower than the wheel used on the 900 classic skis and has a more crowned profile for better skate characteristics', 10470.00),
 (5, 'XLC940C', 'XLC900.jpg', 'The combi version of our composite shaft classic ski for paved surfaces offering the most on snow like feel of any classic ski on the market. The rear wheel is harder than the rubber in the classic skis because the scrubbing motion in skating reduces tire life. The front ratchet wheel is narrower than the wheel used on the 900 classic skis and has a more crowned profile for better skate characteristics. The result is an excellent compromise for both classic and skate skiing', 11670.00)
+
+INSERT INTO Specification ([name], [value], [product])
+VALUES
+('Wheelbase', '700mm/27.3”', 13),
+('Weight per pair', '1750g/3.85bs', 13),
+('Ground Clearance', '31mm/1.21”', 13),
+('Wheel Diameter', '70mm/2.73”', 13),
+('Wheel Width', '40mm Rear/31mm Front', 13)
