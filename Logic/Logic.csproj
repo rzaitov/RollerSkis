@@ -41,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
+    <Compile Include="Ordinal\Ordinal.cs" />
+    <Compile Include="Ordinal\ProductFieldOridinal.cs" />
+    <Compile Include="Ordinal\SpecificationFieldOridinal.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductServices.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

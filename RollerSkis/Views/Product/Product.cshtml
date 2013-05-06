@@ -1,9 +1,7 @@
 ﻿@model Logic.Domain.Product
-
 @{
     Layout = null;
 }
-
 <html>
 <head>
     <title>@Model.Name</title>
@@ -15,19 +13,24 @@
             @{ string path = Path.Combine ("~/Content/ProductImg", Model.ImageName ?? "default.jpg"); }
             <img src="@Url.Content(path)"  class="thumbnail"/>
         </div>
-        <div class="span5">
-        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
-        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
-        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
-        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
-        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
-        lfnjjjjjjjjjjjjjjjjjlsgjnvgjhejkghjkjj<br />
-        </div>
+        @if (Model.Specification.Count > 0)
+        {
+            <div class="span5">
+                <h4>Характеристики:</h4>
+                <ul class="unstyled">
+                    @foreach (var kvp in Model.Specification)
+                    {
+                        <li>@string.Format("{0} : {1}", kvp.Key, kvp.Value)</li>
+                    }
+                </ul>
+            </div>
+        }
     </div>
     <div class="row">
         <div class="span12">
-        <h4>Описание</h4>
-        @Model.Description
+            <h4>
+                Описание</h4>
+            @Model.Description
         </div>
     </div>
 </body>

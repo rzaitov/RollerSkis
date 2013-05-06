@@ -8,6 +8,7 @@ using System.Data.Sql;
 using System.Data.SqlClient;
 
 using Logic.Domain;
+using Logic.Data;
 
 namespace Logic.Service
 {
@@ -55,7 +56,7 @@ WHERE
 					using (SqlDataReader reader = cmd.ExecuteReader ())
 					{
 						ProductFieldOridinal pfo = new ProductFieldOridinal (reader);
-						pfo.LoadOriginals ();
+						pfo.LoadOrdinals ();
 
 						while (reader.Read ())
 						{
@@ -74,10 +75,12 @@ WHERE
 			string cmdText = string.Format (@"
 SELECT {0}
 FROM Product AS P
+LEFT JOIN Specification AS SPEC
+	ON SPEC.[product] = P.[id]
 WHERE
 	P.[product_type] = @product_type
 	AND P.[name] = @product_name
-", GetEscapedFieldNames("P"));
+", GetEscapedFieldNames ("P", "SPEC.[name]", "SPEC.[value]"));
 			
 			Product foundProduct = null;
 
@@ -94,11 +97,16 @@ WHERE
 					using (SqlDataReader reader = cmd.ExecuteReader ())
 					{
 						ProductFieldOridinal pfo = new ProductFieldOridinal (reader);
-						pfo.LoadOriginals ();
+						pfo.LoadOrdinals ();
+						
+						SpecificationFieldOridinal sfo = new SpecificationFieldOridinal (reader);
+						sfo.LoadOrdinals ();
+
 
 						if (reader.Read ())
 						{
 							foundProduct = pfo.GetProduct();
+							sfo.LoadOneSpecificationTo (foundProduct);
 						}
 					}
 				}
@@ -107,59 +115,15 @@ WHERE
 			return foundProduct;
 		}
 
-		private string GetEscapedFieldNames(string tableName)
+		private string GetEscapedFieldNames(string tableName, params string[] additionalFields)
 		{
-			IEnumerable<string> fields = Product.EscapedFieldsNames.Select(fn => string.Format("{0}.{1}", tableName, fn));
-			string result = string.Join(", ", fields);
+			Func<string, string> normilizer = s => string.Format("{0}.{1}", tableName, s);
+			IEnumerable<string> fields = Product.EscapedFieldsNames.Select(normilizer);
+			IEnumerable<string> resultFields = (additionalFields != null) ? additionalFields.Union(fields) : fields;
+			
+			string result = string.Join(", ", resultFields);
 
 			return result;
-		}
-	}
-
-	internal class ProductFieldOridinal
-	{
-		public int idOridinal = -1;
-		public int descriptionOridinal = -1;
-		public int imageNameOridinal = -1;
-		public int nameOridinal = -1;
-		public int priceOridinal = -1;
-		public int productTypeOridinal = -1;
-
-		private SqlDataReader _reader;
-
-		public ProductFieldOridinal (SqlDataReader reader)
-		{
-			_reader = reader;
-		}
-
-		public bool LoadOriginals ()
-		{
-			bool hasRows = _reader.HasRows;
-			if (hasRows)
-			{
-				idOridinal = _reader.GetOrdinal ("id");
-				descriptionOridinal = _reader.GetOrdinal ("description");
-				imageNameOridinal = _reader.GetOrdinal ("image_name");
-				nameOridinal = _reader.GetOrdinal ("name");
-				priceOridinal = _reader.GetOrdinal ("price");
-				productTypeOridinal = _reader.GetOrdinal ("product_type");
-			}
-
-			return hasRows;
-		}
-
-		public Product GetProduct ()
-		{
-			Product p = new Product ();
-
-			p.Id = _reader.GetInt32 (idOridinal);
-			p.Name = _reader.GetString (nameOridinal);
-			p.Description = _reader.IsDBNull (descriptionOridinal) ? null : _reader.GetString (descriptionOridinal);
-			p.ImageName = _reader.IsDBNull (imageNameOridinal) ? null : _reader.GetString (imageNameOridinal);
-			p.Price = _reader.GetDecimal (priceOridinal);
-			p.ProductType = (ProductType)_reader.GetInt32 (productTypeOridinal);
-
-			return p;
 		}
 	}
 }

@@ -16,6 +16,12 @@ namespace Logic.Domain
 		public decimal Price { get; set; }
 		public ProductType ProductType { get; set; }
 		public string ImageName { get; set; }
+		public Dictionary<string, string> Specification { get; protected set; }
+
+		public Product ()
+		{
+			Specification = new Dictionary<string, string> ();
+		}
 
 		static Product ()
 		{
