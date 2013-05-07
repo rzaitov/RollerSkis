@@ -73,14 +73,14 @@ WHERE
 		public Product GetProduct (ProductType exactType, string name)
 		{
 			string cmdText = string.Format (@"
-SELECT {0}
+SELECT {0}, SPEC.[name] as spec_name, SPEC.[value] as spec_value
 FROM Product AS P
 LEFT JOIN Specification AS SPEC
 	ON SPEC.[product] = P.[id]
 WHERE
 	P.[product_type] = @product_type
 	AND P.[name] = @product_name
-", GetEscapedFieldNames ("P", "SPEC.[name]", "SPEC.[value]"));
+", GetEscapedFieldNames ("P"));
 			
 			Product foundProduct = null;
 
@@ -100,12 +100,18 @@ WHERE
 						pfo.LoadOrdinals ();
 						
 						SpecificationFieldOridinal sfo = new SpecificationFieldOridinal (reader);
+						sfo.SetAliasForColumn ("name", "spec_name");
+						sfo.SetAliasForColumn ("value", "spec_value");
 						sfo.LoadOrdinals ();
 
-
-						if (reader.Read ())
+						bool isFirstRow = true;
+						while (reader.Read ())
 						{
-							foundProduct = pfo.GetProduct();
+							if (isFirstRow)
+							{
+								foundProduct = pfo.GetProduct ();
+								isFirstRow = false;
+							}
 							sfo.LoadOneSpecificationTo (foundProduct);
 						}
 					}

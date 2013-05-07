@@ -13,29 +13,24 @@ namespace Logic.Data
 {
 	internal class SpecificationFieldOridinal : Ordinal
 	{
-		public int idOrdinal = -1;
-		public int nameOrdinal = -1;
-		public int valueOrdinal = -1;
-
-		private SqlDataReader _reader;
+		private string idColumnName;
+		private string nameColumnName;
+		private string valueColumnName;
 
 		public SpecificationFieldOridinal (SqlDataReader reader)
 			: base(reader)
 		{
-			_reader = reader;
-		}
+			idColumnName = "id";
+			nameColumnName = "name";
+			valueColumnName = "value";
 
-		protected override void LoadOrdinalValues ()
-		{
-			idOrdinal = _reader.GetOrdinal ("id");
-			nameOrdinal = _reader.GetOrdinal ("name");
-			valueOrdinal = _reader.GetOrdinal ("value");
+			SetColumns (new string[] { idColumnName, nameColumnName, valueColumnName });
 		}
 
 		public void LoadOneSpecificationTo (Product product)
 		{
-			string key = _reader.GetString(nameOrdinal);
-			product.Specification[key] = _reader.GetString (valueOrdinal);
+			string key = _reader.GetString(GetOridinalFor(nameColumnName));
+			product.Specification[key] = _reader.GetString (GetOridinalFor(valueColumnName));
 		}
 	}
 }
