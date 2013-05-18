@@ -34,6 +34,7 @@ namespace RollerSkis.Controllers
 			return string.Join ("\n\n", products.Select (p => string.Format ("name: {0}	price: {1}\ndescription: {2}", p.Name, p.Price, p.Description)));
 		}
 
+		#region ActioMethods
 		public ActionResult GetProducts (string parentTypeName, string productTypeName = null)
 		{
 			bool isSearchWithExactType = !string.IsNullOrEmpty (productTypeName);
@@ -54,7 +55,9 @@ namespace RollerSkis.Controllers
 			ProductType productType = ProductTypeHelper[productTypeName];
 			return ProductView (productType, modelName);
 		}
+		#endregion
 
+		#region Login
 		private void CheckParentType (string parentTypeName, string productTypeName)
 		{
 			// Проверяем действительно ли parentTypeName является родителем для productTypeName
@@ -78,7 +81,9 @@ namespace RollerSkis.Controllers
 
 			return isParentCorrect;
 		}
+		#endregion
 
+		#region Render
 		private ViewResult GetProductSearchResult (ProductType type)
 		{
 			List<Product> searchResult = new List<Product> ();
@@ -97,5 +102,6 @@ namespace RollerSkis.Controllers
 			Product p = ApplicationContext.ProductService.GetProduct (exactType, modelName);
 			return View ("Product", p);
 		}
+		#endregion
 	}
 }
