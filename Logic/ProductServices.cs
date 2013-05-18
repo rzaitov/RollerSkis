@@ -83,42 +83,90 @@ WHERE
 ", GetEscapedFieldNames ("P"));
 			
 			Product foundProduct = null;
+			
+			Dictionary<string, object> parameters = new Dictionary<string, object>
+			{
+				{ "@product_type", (int)exactType },
+				{ "@product_name", name }
+			};
 
+			Action<SqlDataReader> fetcher = reader =>
+			{
+				ProductFieldOridinal pfo = new ProductFieldOridinal (reader);
+				pfo.LoadOrdinals ();
+
+				SpecificationFieldOridinal sfo = new SpecificationFieldOridinal (reader);
+				sfo.SetAliasForColumn ("name", "spec_name");
+				sfo.SetAliasForColumn ("value", "spec_value");
+				sfo.LoadOrdinals ();
+
+				bool isFirstRow = true;
+				while (reader.Read ())
+				{
+					if (isFirstRow)
+					{
+						foundProduct = pfo.GetProduct ();
+						isFirstRow = false;
+					}
+					sfo.LoadOneSpecificationTo (foundProduct);
+				}
+			};
+
+			ExecuteQuery (cmdText, parameters, fetcher);
+
+			return foundProduct;
+		}
+
+		public bool IsValidParentTypeFor (ProductType parentType, ProductType product)
+		{
+			string cmdText = @"
+SELECT COUNT(*) AS is_exist
+FROM ProductType AS PT
+WHERE
+	PT.[parent_id] = @parentId
+	AND PT.[id] = @productId";
+
+			bool result = false;
+
+			Dictionary<string, object> parameters = new Dictionary<string, object>
+			{
+				{ "@parentId", (int)parentType },
+				{ "@productId", (int)product }
+			};
+
+			Action<SqlDataReader> fetcher = reader =>
+			{
+				while (reader.Read ())
+				{
+					result = reader.GetInt32 (0) == 1;
+				}
+			};
+
+			ExecuteQuery (cmdText, parameters, fetcher);
+
+			return result;
+		}
+
+		private void ExecuteQuery (string cmdText, Dictionary<string, object> parameters, Action<SqlDataReader> fetcher)
+		{
 			using (SqlConnection connection = new SqlConnection (_connectionString))
 			{
 				using (SqlCommand cmd = new SqlCommand (cmdText, connection))
 				{
 					cmd.CommandType = CommandType.Text;
-					cmd.Parameters.AddWithValue ("@product_type", (int)exactType);
-					cmd.Parameters.AddWithValue ("@product_name", name);
+					foreach (var p in parameters)
+					{
+						cmd.Parameters.AddWithValue (p.Key, p.Value);
+					}
 
 					connection.Open ();
 
 					using (SqlDataReader reader = cmd.ExecuteReader ())
 					{
-						ProductFieldOridinal pfo = new ProductFieldOridinal (reader);
-						pfo.LoadOrdinals ();
-						
-						SpecificationFieldOridinal sfo = new SpecificationFieldOridinal (reader);
-						sfo.SetAliasForColumn ("name", "spec_name");
-						sfo.SetAliasForColumn ("value", "spec_value");
-						sfo.LoadOrdinals ();
-
-						bool isFirstRow = true;
-						while (reader.Read ())
-						{
-							if (isFirstRow)
-							{
-								foundProduct = pfo.GetProduct ();
-								isFirstRow = false;
-							}
-							sfo.LoadOneSpecificationTo (foundProduct);
-						}
+						fetcher (reader);
 					}
 				}
 			}
-
-			return foundProduct;
 		}
 
 		private string GetEscapedFieldNames(string tableName, params string[] additionalFields)
