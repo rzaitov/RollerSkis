@@ -44,6 +44,7 @@
     <Compile Include="Domain\ProductTypeNode.cs" />
     <Compile Include="Ordinal\Ordinal.cs" />
     <Compile Include="Ordinal\ProductFieldOridinal.cs" />
+    <Compile Include="Ordinal\ProductTypeOridinal.cs" />
     <Compile Include="Ordinal\SpecificationFieldOridinal.cs" />
     <Compile Include="Domain\Product.cs" />
     <Compile Include="ProductServices.cs" />
