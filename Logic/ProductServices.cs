@@ -20,6 +20,8 @@ namespace Logic.Service
 
 		private string _connectionString;
 
+		private static IEnumerable<ProductTypeNode> ProductTypesHierarchy;
+
 		public ProductServices (string login, string pwd, string host, string dbName)
 		{
 			_login = login;
@@ -28,7 +30,6 @@ namespace Logic.Service
 
 			_connectionString = string.Format ("Server={0};Database={1};User Id={2};Password={3};", host, dbName, login, pwd);
 		}
-
 
 		public IEnumerable<Product> GetProductsByType (ProductType type)
 		{
@@ -147,6 +148,60 @@ WHERE
 			return result;
 		}
 
+		public IEnumerable<ProductTypeNode> GetProductTypesHierarchy ()
+		{
+			if (ProductTypesHierarchy == null)
+			{
+				ProductTypesHierarchy = LoadProductTypesHierarchy ();
+			}
+
+			return ProductTypesHierarchy;
+		}
+
+		private IEnumerable<ProductTypeNode> LoadProductTypesHierarchy ()
+		{
+			string cmdText = @"
+SELECT *
+FROM ProductType AS PT
+ORDER BY PT.[parent_id]";
+
+			List<ProductTypeNode> nodes = new List<ProductTypeNode> ();
+
+			Action<SqlDataReader> fetcher = reader =>
+			{
+				ProductTypeOridinal pto = new ProductTypeOridinal (reader);
+				pto.LoadOrdinals ();
+
+				while (reader.Read ())
+				{
+					ProductTypeNode node = pto.GetProductTypeNode ();
+					nodes.Add (node);
+				}
+			};
+
+			ExecuteQuery (cmdText, null, fetcher);
+
+			var lookup = nodes.ToLookup(ptn => ptn.ParentId);
+			nodes.Clear ();
+
+			var parents = lookup[(int?)null];
+			nodes.AddRange (parents);
+
+			foreach (var item in lookup)
+			{
+				if (!item.Key.HasValue)
+					continue;
+
+				ProductTypeNode parent = nodes.FirstOrDefault (ptn => ptn.Id == item.Key.Value);
+				if (parent == null)
+					continue;
+
+				parent.AddRange (lookup[item.Key]);
+			}
+
+			return nodes;
+		}
+
 		private void ExecuteQuery (string cmdText, Dictionary<string, object> parameters, Action<SqlDataReader> fetcher)
 		{
 			using (SqlConnection connection = new SqlConnection (_connectionString))
@@ -154,9 +209,12 @@ WHERE
 				using (SqlCommand cmd = new SqlCommand (cmdText, connection))
 				{
 					cmd.CommandType = CommandType.Text;
-					foreach (var p in parameters)
+					if (parameters != null)
 					{
-						cmd.Parameters.AddWithValue (p.Key, p.Value);
+						foreach (var p in parameters)
+						{
+							cmd.Parameters.AddWithValue (p.Key, p.Value);
+						}
 					}
 
 					connection.Open ();
