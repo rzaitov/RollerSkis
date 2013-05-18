@@ -26,10 +26,35 @@ namespace RollerSkis
 
 			routes.MapRoute (
 				null,
-				"products/roller-skis/{productType}/{modelName}",
-				new { controller = "Product", action = "GetSkis", productType = UrlParameter.Optional, modelName = UrlParameter.Optional },
-				new { productType = "^combi$|^classic$|^skate|^$"}
+				"products/{parentTypeName}/{productTypeName}/{modelName}",
+				new
+				{
+					controller = "Product",
+					action = "GetProduct",
+					productTypeName = UrlParameter.Optional,
+				},
+				new
+				{
+					parentTypeName = "^roller-skis$|^accessories$|^nordixc$|^brakes$|^speed-reducers$",
+					productTypeName = "^combi$|^classic$|^skate|^$"}
 				);
+
+			routes.MapRoute (
+				null,
+				"products/{parentTypeName}/{productTypeName}",
+				new
+				{
+					controller = "Product",
+					action = "GetProducts",
+					productTypeName = UrlParameter.Optional,
+				},
+				new
+				{
+					parentTypeName = "^roller-skis$|^accessories$|^nordixc$|^brakes$|^speed-reducers$",
+					productTypeName = "^combi$|^classic$|^skate|^$"
+				}
+				);
+			//routes.MapRoute ();
 
 			routes.MapRoute (
 				"Default", // Route name

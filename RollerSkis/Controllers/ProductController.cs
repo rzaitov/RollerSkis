@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Diagnostics.Contracts;
 
 using Logic;
 using Logic.Domain;
+using Logic.Service;
 
 using RollerSkis.Models;
+
 
 namespace RollerSkis.Controllers
 {
@@ -16,16 +19,12 @@ namespace RollerSkis.Controllers
 	{
 		//
 		// GET: /Product/
-		private static Dictionary<string, ProductType> productTypes;
-		
+		private static readonly ProductTypeHelper ProductTypeHelper;
+		private static readonly ProductServices ProductService;
 		static ProductController ()
 		{
-			productTypes = new Dictionary<string, ProductType>
-			{
-				{ "skate", ProductType.Skate },
-				{ "classic", ProductType.Classic },
-				{ "combi", ProductType.Combi }
-			};
+			ProductTypeHelper = new ProductTypeHelper ();
+			ProductService = ApplicationContext.ProductService;
 		}
 
 		public string Index ()
@@ -35,13 +34,49 @@ namespace RollerSkis.Controllers
 			return string.Join ("\n\n", products.Select (p => string.Format ("name: {0}	price: {1}\ndescription: {2}", p.Name, p.Price, p.Description)));
 		}
 
-		public ActionResult GetSkis (string productType, string modelName)
+		public ActionResult GetProducts (string parentTypeName, string productTypeName = null)
 		{
-			ProductType type = string.IsNullOrEmpty (productType) ? ProductType.RollerSkis : productTypes[productType];
-			bool searchMultipleModels = string.IsNullOrEmpty (modelName);
+			bool isSearchWithExactType = !string.IsNullOrEmpty (productTypeName);
 
-			ViewResult view = searchMultipleModels ? view = GetProductSearchResult (type) : ProductView (type, modelName);
+			CheckParentType (parentTypeName, productTypeName);
+
+			string typeNameKey = isSearchWithExactType ? productTypeName : parentTypeName;
+			ProductType type = ProductTypeHelper[typeNameKey];
+
+			ViewResult view = GetProductSearchResult (type);
 			return view;
+		}
+
+		public ActionResult GetProduct (string parentTypeName, string productTypeName, string modelName)
+		{
+			CheckParentType (parentTypeName, productTypeName);
+
+			ProductType productType = ProductTypeHelper[productTypeName];
+			return ProductView (productType, modelName);
+		}
+
+		private void CheckParentType (string parentTypeName, string productTypeName)
+		{
+			// Проверяем действительно ли parentTypeName является родителем для productTypeName
+			bool isParentIncorrect = !IsParentValid (parentTypeName, productTypeName);
+
+			// например ChildType/ParentType
+			if (isParentIncorrect)
+			{
+				throw new HttpException (404, "NotFound");
+			}
+		}
+
+		private bool IsParentValid (string parentTypeName, string productTypeName)
+		{
+			bool isSearchByTwoTypes = !string.IsNullOrEmpty (productTypeName);
+
+			// Проверяем действительно ли parentTypeName является родителем для productTypeName
+			ProductType parentType = ProductTypeHelper[parentTypeName];
+			bool isParentCorrect = !isSearchByTwoTypes
+				|| ProductService.IsValidParentTypeFor (parentType, ProductTypeHelper[productTypeName]);
+
+			return isParentCorrect;
 		}
 
 		private ViewResult GetProductSearchResult (ProductType type)
