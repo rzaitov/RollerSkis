@@ -36,9 +36,9 @@ namespace RollerSkis.Models
 				AddToMap (ProductType.Combi, "combi");
 
 			AddToMap (ProductType.Accessories, "accessories");
-			AddToMap (ProductType.Accessories, "nordixc");
+			//AddToMap (ProductType.N, "nordixc");
 			AddToMap (ProductType.Brakes, "brakes");
-			AddToMap (ProductType.Brakes, "speed-reducers");
+			AddToMap (ProductType.SpeedReducers, "speed-reducers");
 		}
 
 		static void AddToMap (ProductType type, string typeName)
