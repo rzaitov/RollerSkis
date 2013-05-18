@@ -57,7 +57,7 @@ namespace RollerSkis.Controllers
 		}
 		#endregion
 
-		#region Login
+		#region Logic
 		private void CheckParentType (string parentTypeName, string productTypeName)
 		{
 			// Проверяем действительно ли parentTypeName является родителем для productTypeName
