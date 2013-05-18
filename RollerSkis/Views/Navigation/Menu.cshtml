@@ -1,0 +1,18 @@
+﻿@using Logic.Domain
+@using RollerSkis.Models
+@model IEnumerable<ProductTypeNode>
+@{
+    Layout = null;
+}
+<!-- Верхний уровень -->
+@{ ProductTypeHelper Pth = new ProductTypeHelper (); }
+@foreach(ProductTypeNode p in Model)
+{
+    @Html.RouteLink(p.Name, new { controller = "Product", action = "GetProducts", parentTypeName = @Pth[p.ProductTypeValue]})
+
+    foreach (ProductTypeNode c in p.TypeChildren)
+    {
+        @Html.RouteLink(@c.Name, new { controller = "Product", action = "GetProducts", parentTypeName = @Pth[p.ProductTypeValue], productTypeName = @Pth[c.ProductTypeValue]})
+    }
+}
+}
