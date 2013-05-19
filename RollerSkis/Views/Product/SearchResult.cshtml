@@ -1,35 +1,18 @@
 ﻿@using Logic.Domain
 @model RollerSkis.Models.ProductsPageModel
-
 @{
-    Layout = null;
+    int pCount = @Model.Products.Count;
+    int pIndex = 0;
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>GetSkis</title>
-    <link href="@Url.Content("~/Content/bootstrap.css")" rel="Stylesheet" type="text/css" />
-</head>
-<body>
-    <div>
-        @{
-            int pCount = @Model.Products.Count;
-            int pIndex = 0;
-        }
-        @for (int row = 0; row < Math.Ceiling((double)pCount / 3); row++ )
+@for (int row = 0; row < Math.Ceiling((double)pCount / 3); row++ )
+{
+    <div class="row">
+        <ul class="thumbnails">
+        @for (int position = 0; (position < 3) && (pIndex < pCount); position++ )
         {
-        <div class="row">
-            <ul class="thumbnails">
-            @for (int position = 0; (position < 3) && (pIndex < pCount); position++ )
-            {
-                Product p = Model.Products[pIndex++];
-                Html.RenderPartial ("ProductItem", p);
-            }
-            </ul>
-          </div>
+            Product p = Model.Products[pIndex++];
+            Html.RenderPartial ("ProductItem", p);
         }
+        </ul>
     </div>
-</body>
-</html>
+}

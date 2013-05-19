@@ -1,34 +1,26 @@
 ﻿@model Logic.Domain.Product
-<html>
-<head>
-    <title>@Model.Name</title>
-    <link href="@Url.Content("~/Content/bootstrap.css")" rel="Stylesheet" type="text/css" />
-</head>
-<body>
-    <div class="row">
+<div class="row">
+    <div class="span5">
+        @{ string path = Path.Combine ("~/Content/ProductImg", Model.ImageName ?? "default.jpg"); }
+        <img src="@Url.Content(path)"  class="thumbnail"/>
+    </div>
+    @if (Model.Specification.Count > 0)
+    {
         <div class="span5">
-            @{ string path = Path.Combine ("~/Content/ProductImg", Model.ImageName ?? "default.jpg"); }
-            <img src="@Url.Content(path)"  class="thumbnail"/>
+            <h4>Характеристики:</h4>
+            <ul class="unstyled">
+                @foreach (var kvp in Model.Specification)
+                {
+                    <li>@string.Format("{0} : {1}", kvp.Key, kvp.Value)</li>
+                }
+            </ul>
         </div>
-        @if (Model.Specification.Count > 0)
-        {
-            <div class="span5">
-                <h4>Характеристики:</h4>
-                <ul class="unstyled">
-                    @foreach (var kvp in Model.Specification)
-                    {
-                        <li>@string.Format("{0} : {1}", kvp.Key, kvp.Value)</li>
-                    }
-                </ul>
-            </div>
-        }
+    }
+</div>
+<div class="row">
+    <div class="span12">
+        <h4>
+            Описание</h4>
+        @Model.Description
     </div>
-    <div class="row">
-        <div class="span12">
-            <h4>
-                Описание</h4>
-            @Model.Description
-        </div>
-    </div>
-</body>
-</html>
+</div>
