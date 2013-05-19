@@ -6,13 +6,49 @@
 }
 <!-- Верхний уровень -->
 @{ ProductTypeHelper Pth = new ProductTypeHelper (); }
-@foreach(ProductTypeNode p in Model)
-{
-    @Html.RouteLink(p.Name, new { controller = "Product", action = "GetProducts", parentTypeName = @Pth[p.ProductTypeValue]})
 
-    foreach (ProductTypeNode c in p.TypeChildren)
-    {
-        @Html.RouteLink(@c.Name, new { controller = "Product", action = "GetProducts", parentTypeName = @Pth[p.ProductTypeValue], productTypeName = @Pth[c.ProductTypeValue]})
-    }
-}
-}
+<div class="navbar">
+    <div class="navbar-inner">
+        <ul class="nav">
+            @*Main*@
+            <li><a href="#">Main</a></li>
+
+            @*Catalog*@
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Products</a>
+
+                @*Dropdown declaration*@
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                @foreach(ProductTypeNode p in Model)
+                {
+                    @*Dropdown row*@
+                    bool haveChildren = p.ChildrenCount > 0;
+                    string ddSummenu = haveChildren ? "dropdown-submenu" : null;
+
+                    <li class="@ddSummenu">
+                        @Html.RouteLink(p.Name, new { controller = "Product", action = "GetProducts", parentTypeName = @Pth[p.ProductTypeValue] })
+
+                        @if (haveChildren)
+                        {
+                            <ul class="dropdown-menu">
+                                @foreach (ProductTypeNode c in p.Children)
+                                {
+                                    <li>
+                                        @Html.RouteLink(@c.Name, new { controller = "Product", action = "GetProducts", parentTypeName = @Pth[p.ProductTypeValue], productTypeName = @Pth[@c.ProductTypeValue] })
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </li>
+                }
+                </ul>
+            </li>
+
+            @*Contacts*@
+            <li><a href="#">Contacts</a></li>
+
+            @*Cart*@
+            <li><a href="#">Cart</a></li>
+        </ul>
+    </div>
+</div>
