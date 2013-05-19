@@ -20,18 +20,20 @@ namespace Logic.Domain
 		}
 		public string Name { get; internal set; }
 
-		internal List<ProductTypeNode> Children { get; private set; }
-		public IEnumerable<ProductTypeNode> TypeChildren
+		public int ChildrenCount { get { return TypeChildren.Count; } }
+
+		internal List<ProductTypeNode> TypeChildren { get; private set; }
+		public IEnumerable<ProductTypeNode> Children
 		{
 			get
 			{
-				return Children;
+				return TypeChildren;
 			}
 		}
 
 		public ProductTypeNode ()
 		{
-			Children = new List<ProductTypeNode> ();
+			TypeChildren = new List<ProductTypeNode> ();
 		}
 
 		internal void AddChild (ProductTypeNode node)
@@ -39,7 +41,7 @@ namespace Logic.Domain
 			Contract.Requires (node.Parent == null);
 
 			node.Parent = this;
-			this.Children.Add (node);
+			this.TypeChildren.Add (node);
 		}
 
 		internal void AddRange (IEnumerable<ProductTypeNode> children)
