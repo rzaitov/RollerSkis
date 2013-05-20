@@ -20,7 +20,9 @@ namespace Logic.Service
 
 		private string _connectionString;
 
+		private object _myLocker = new object ();
 		private static IEnumerable<ProductTypeNode> ProductTypesHierarchy;
+		private static Dictionary<ProductType, ProductTypeValue> ProductTypesRelations;
 
 		public ProductServices (string login, string pwd, string host, string dbName)
 		{
@@ -29,6 +31,56 @@ namespace Logic.Service
 			_host = host;
 
 			_connectionString = string.Format ("Server={0};Database={1};User Id={2};Password={3};", host, dbName, login, pwd);
+
+			LoadProductTypesRelations ();
+		}
+
+		private void LoadProductTypesRelations ()
+		{
+			if (ProductTypesRelations == null)
+			{
+				lock (_myLocker)
+				{
+					if (ProductTypesRelations == null)
+					{
+						ProductTypesRelations = new Dictionary<ProductType, ProductTypeValue> ();
+
+						string cmdText = @"
+WITH PTHierarchy ([id], [parent_id], [name], [level])
+AS
+(
+	SELECT PT.id, PT.parent_id, PT.name, 0 AS level
+	FROM [ProductType] AS PT
+	WHERE PT.parent_id IS NULL
+
+	UNION ALL
+
+	SELECT PT.id, PT.parent_id, PT.name, level + 1 AS lecel
+	FROM [ProductType] AS PT
+	INNER JOIN PTHierarchy AS PTH
+		ON PTH.id = PT.parent_id
+)
+SELECT [id], [parent_id], [name]
+FROM PTHierarchy
+ORDER BY level, parent_id ASC";
+
+
+						Action<SqlDataReader> fetcher = reader =>
+						{
+							ProductTypeOridinal pto = new ProductTypeOridinal (reader);
+							pto.LoadOrdinals ();
+
+							while (reader.Read ())
+							{
+								ProductTypeValue ptv = pto.GetProductTypeValue ();
+								ProductTypesRelations[ptv.ProductType] = ptv;
+							}
+						};
+
+						ExecuteQuery (cmdText, null, fetcher);
+					}
+				}
+			}
 		}
 
 		public IEnumerable<Product> GetProductsByType (ProductType type)
@@ -120,32 +172,28 @@ WHERE
 
 		public bool IsValidParentTypeFor (ProductType parentType, ProductType product)
 		{
-			string cmdText = @"
-SELECT COUNT(*) AS is_exist
-FROM ProductType AS PT
-WHERE
-	PT.[parent_id] = @parentId
-	AND PT.[id] = @productId";
+			ProductType? realParentType = ProductTypesRelations[product].ParentType;
 
-			bool result = false;
-
-			Dictionary<string, object> parameters = new Dictionary<string, object>
-			{
-				{ "@parentId", (int)parentType },
-				{ "@productId", (int)product }
-			};
-
-			Action<SqlDataReader> fetcher = reader =>
-			{
-				while (reader.Read ())
-				{
-					result = reader.GetInt32 (0) == 1;
-				}
-			};
-
-			ExecuteQuery (cmdText, parameters, fetcher);
-
+			bool result = realParentType.HasValue && realParentType.Value == parentType;
 			return result;
+		}
+
+		public List<ProductType> GetAncestorTypesAndSelf (ProductType type)
+		{
+			List<ProductType> types = new List<ProductType> ();
+
+			ProductTypeValue ptv = null;
+			ProductType? pt = type;
+			do
+			{
+				// не помещаем в lock тк в ProductTypesRelations не произодится запись
+				ptv = ProductTypesRelations[pt.Value];
+				types.Add (ptv.ProductType);
+
+				pt = ptv.ParentType;
+			} while (pt.HasValue);
+
+			return types;
 		}
 
 		[Obsolete]

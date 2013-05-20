@@ -25,7 +25,7 @@ namespace Logic.Data
 			_columnDescriptors.AddRange (columnNames.Select (cn => new ColumnDescriptor { ColumnName = cn }));
 		}
 
-		protected int GetOridinalFor (string columnName)
+		public int GetOridinalFor (string columnName)
 		{
 			return _columnDescriptors.First (cd => cd.ColumnName == columnName).Ordinal;
 		}
