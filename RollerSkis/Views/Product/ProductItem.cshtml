@@ -1,7 +1,18 @@
-﻿@model Logic.Domain.Product
+﻿@using Logic
+@using Logic.Domain
+@using RollerSkis.Models;
+@model Logic.Domain.Product
+@{
+    var pService = ApplicationContext.ProductService;
+    ProductTypeHelper pth = new ProductTypeHelper ();
+
+    List<ProductType> types = pService.GetAncestorTypesAndSelf(Model.ProductType);
+    string productTypeName = pth[types[0]];
+    string parentTypeName = types.Count > 1 ? pth[types[1]] : null;
+}
 <li class="span3">
     <div class="thumbnail span3">
-        <h3>@Model.Name</h3>
+        <h3>@Html.RouteLink(Model.Name, new { controller = "Product", action = "GetProduct", parentTypeName = parentTypeName, productTypeName = productTypeName, modelName = Model.Name })</h3>
             @if (!string.IsNullOrWhiteSpace (Model.ImageName))
             {
                 string path = Path.Combine("~/Content/ProductImg", Model.ImageName);
