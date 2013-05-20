@@ -29,8 +29,16 @@ namespace Logic.Data
 
 		public void LoadOneSpecificationTo (Product product)
 		{
-			string key = _reader.GetString(GetOridinalFor(nameColumnName));
-			product.Specification[key] = _reader.GetString (GetOridinalFor(valueColumnName));
+			int oridinal = GetOridinalFor(nameColumnName);
+
+			// Не для всех товаров есть технические характеристики
+			bool specExist = !_reader.IsDBNull(oridinal);
+
+			if (specExist)
+			{
+				string key = _reader.GetString(oridinal);
+				product.Specification[key] = _reader.GetString(GetOridinalFor(valueColumnName));
+			}
 		}
 	}
 }
