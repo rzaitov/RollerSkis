@@ -41,4 +41,11 @@ namespace Logic.Domain
 		Classic = 6,
 		Skate =7
 	}
+
+	public class ProductTypeValue
+	{
+		public ProductType ProductType { get; set; }
+		public ProductType? ParentType { get; set; }
+		public string ProductTypeName { get; set; }
+	}
 }
