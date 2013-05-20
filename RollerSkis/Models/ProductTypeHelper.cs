@@ -30,15 +30,16 @@ namespace RollerSkis.Models
 			productNameTypesMap = new Dictionary<string, ProductType> ();
 			productTypesNameMap = new Dictionary<ProductType, string> ();
 
+			AddToMap(ProductType.SpeedReducers, "speed-reducers");
+			AddToMap(ProductType.Brakes, "brakes");
+			AddToMap(ProductType.Wheels, "wheels");
+			AddToMap(ProductType.Accessories, "accessories");
+			AddToMap(ProductType.Nordixc, "nordixc");
+
 			AddToMap (ProductType.RollerSkis, "roller-skis");
 				AddToMap (ProductType.Skate, "skate");
 				AddToMap (ProductType.Classic, "classic");
 				AddToMap (ProductType.Combi, "combi");
-
-			AddToMap (ProductType.Accessories, "accessories");
-			//AddToMap (ProductType.N, "nordixc");
-			AddToMap (ProductType.Brakes, "brakes");
-			AddToMap (ProductType.SpeedReducers, "speed-reducers");
 		}
 
 		static void AddToMap (ProductType type, string typeName)

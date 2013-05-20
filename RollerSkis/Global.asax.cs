@@ -35,7 +35,7 @@ namespace RollerSkis
 				},
 				new
 				{
-					parentTypeName = "^roller-skis$|^accessories$|^nordixc$|^brakes$|^speed-reducers$",
+					parentTypeName = "^roller-skis$|^speed-reducers$|^brakes$|^wheels$|^accessories$|^nordixc$",
 					productTypeName = "^combi$|^classic$|^skate|^$"}
 				);
 
@@ -50,7 +50,7 @@ namespace RollerSkis
 				},
 				new
 				{
-					parentTypeName = "^roller-skis$|^accessories$|^nordixc$|^brakes$|^speed-reducers$",
+					parentTypeName = "^roller-skis$|^speed-reducers$|^brakes$|^wheels$|^accessories$|^nordixc$",
 					productTypeName = "^combi$|^classic$|^skate|^$"
 				}
 				);
