@@ -148,6 +148,7 @@ WHERE
 			return result;
 		}
 
+		[Obsolete]
 		public IEnumerable<ProductTypeNode> GetProductTypesHierarchy ()
 		{
 			if (ProductTypesHierarchy == null)
@@ -157,7 +158,7 @@ WHERE
 
 			return ProductTypesHierarchy;
 		}
-
+		[Obsolete]
 		private IEnumerable<ProductTypeNode> LoadProductTypesHierarchy ()
 		{
 			string cmdText = @"
@@ -174,17 +175,21 @@ ORDER BY PT.[parent_id]";
 
 				while (reader.Read ())
 				{
-					ProductTypeNode node = pto.GetProductTypeNode ();
+					ProductTypeValue ptv = pto.GetProductTypeValue ();
+
+					ProductTypeNode node = new ProductTypeNode ();
+					node.ProductTypeValue = ptv;
+
 					nodes.Add (node);
 				}
 			};
 
 			ExecuteQuery (cmdText, null, fetcher);
 
-			var lookup = nodes.ToLookup(ptn => ptn.ParentId);
+			var lookup = nodes.ToLookup(ptv => ptv.ProductTypeValue.ParentType);
 			nodes.Clear ();
 
-			var parents = lookup[(int?)null];
+			var parents = lookup[(ProductType?)null];
 			nodes.AddRange (parents);
 
 			foreach (var item in lookup)
@@ -192,7 +197,7 @@ ORDER BY PT.[parent_id]";
 				if (!item.Key.HasValue)
 					continue;
 
-				ProductTypeNode parent = nodes.FirstOrDefault (ptn => ptn.Id == item.Key.Value);
+				ProductTypeNode parent = nodes.FirstOrDefault (ptn => ptn.ProductTypeValue.ProductType == item.Key.Value);
 				if (parent == null)
 					continue;
 
@@ -202,6 +207,7 @@ ORDER BY PT.[parent_id]";
 			return nodes;
 		}
 
+		#region Utils
 		private void ExecuteQuery (string cmdText, Dictionary<string, object> parameters, Action<SqlDataReader> fetcher)
 		{
 			using (SqlConnection connection = new SqlConnection (_connectionString))
@@ -237,5 +243,6 @@ ORDER BY PT.[parent_id]";
 
 			return result;
 		}
+		#endregion
 	}
 }

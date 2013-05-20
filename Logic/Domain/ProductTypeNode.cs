@@ -9,18 +9,7 @@ namespace Logic.Domain
 {
 	public class ProductTypeNode
 	{
-		internal int Id { get; set; }
-		internal int? ParentId { get; set; }
-
 		public ProductTypeNode Parent { get; internal set; }
-
-		public ProductType ProductTypeValue
-		{
-			get { return (ProductType)Id; }
-		}
-		public string Name { get; internal set; }
-
-		public int ChildrenCount { get { return TypeChildren.Count; } }
 
 		internal List<ProductTypeNode> TypeChildren { get; private set; }
 		public IEnumerable<ProductTypeNode> Children
@@ -30,6 +19,10 @@ namespace Logic.Domain
 				return TypeChildren;
 			}
 		}
+
+		public ProductTypeValue ProductTypeValue { get; set; }
+
+		public int ChildrenCount { get { return TypeChildren.Count; } }
 
 		public ProductTypeNode ()
 		{

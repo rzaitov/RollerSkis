@@ -11,9 +11,9 @@ namespace Logic.Data
 {
 	class ProductTypeOridinal : Ordinal
 	{
-		private string idColumnName;
-		private string parentIdColumnName;
-		private string nameColumnName;
+		public string idColumnName { get; private set; }
+		public string parentIdColumnName { get; private set; }
+		public string nameColumnName { get; private set; }
 
 		public ProductTypeOridinal (SqlDataReader reader)
 			: base(reader)
@@ -30,17 +30,17 @@ namespace Logic.Data
 			});
 		}
 
-		public ProductTypeNode GetProductTypeNode ()
+		public ProductTypeValue GetProductTypeValue ()
 		{
-			ProductTypeNode node = new ProductTypeNode ();
-			node.Id = _reader.GetInt32 (GetOridinalFor (idColumnName));
-			
-			int parentIdOridinal = GetOridinalFor(parentIdColumnName);
-			node.ParentId = _reader.IsDBNull (parentIdOridinal) ? (int?)null : _reader.GetInt32 (parentIdOridinal);
+			ProductTypeValue ptv = new ProductTypeValue ();
+			ptv.ProductType = (ProductType)_reader.GetInt32 (GetOridinalFor (idColumnName));
 
-			node.Name = _reader.GetString (GetOridinalFor (nameColumnName));
+			int parentIdOridinal = GetOridinalFor (parentIdColumnName);
+			ptv.ParentType = (ProductType?)(_reader.IsDBNull (parentIdOridinal) ? (int?)null : _reader.GetInt32 (parentIdOridinal));
 
-			return node;
+			ptv.ProductTypeName = _reader.GetString (GetOridinalFor (nameColumnName));
+
+			return ptv;
 		}
 	}
 }
