@@ -35,11 +35,14 @@ namespace Logic.Domain
 	{
 		SpeedReducers = 1,
 		Brakes = 2,
-		Accessories = 3,
-		RollerSkis = 4,
-		Combi = 5,
-		Classic = 6,
-		Skate =7
+		Wheels = 3,
+		Accessories = 4,
+		Nordixc = 5,
+
+		RollerSkis = 6,
+		Combi = 7,
+		Classic = 8,
+		Skate = 9
 	}
 
 	public class ProductTypeValue
