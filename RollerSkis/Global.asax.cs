@@ -26,36 +26,49 @@ namespace RollerSkis
 
 			routes.MapRoute (
 				null,
-				"products/{parentTypeName}/{productTypeName}/{modelName}",
+				"products/{highType}/{lowType}/{modelName}",
 				new
 				{
 					controller = "Product",
 					action = "GetProduct",
-					productTypeName = UrlParameter.Optional,
 				},
 				new
 				{
-					parentTypeName = "^roller-skis$|^speed-reducers$|^brakes$|^wheels$|^accessories$|^nordixc$",
-					productTypeName = "^combi$|^classic$|^skate|^$"}
-				);
+					highType = "^roller-skis$|^speed-reducers$|^brakes$|^wheels$|^accessories$|^nordixc$",
+					lowType = "^combi$|^classic$|^skate$"
+				});
+
+			routes.MapRoute(
+				null,
+				"products/{highType}/{modelName}",
+				new
+				{
+					controller = "Product",
+					action = "GetProduct",
+				},
+				new
+				{
+					highType = "^speed-reducers$|^brakes$|^wheels$|^accessories$|^nordixc$",
+				});
+
 
 			routes.MapRoute (
 				null,
-				"products/{parentTypeName}/{productTypeName}",
+				"products/{highType}/{lowType}",
 				new
 				{
 					controller = "Product",
 					action = "GetProducts",
-					productTypeName = UrlParameter.Optional,
+					lowType = UrlParameter.Optional,
 				},
 				new
 				{
-					parentTypeName = "^roller-skis$|^speed-reducers$|^brakes$|^wheels$|^accessories$|^nordixc$",
-					productTypeName = "^combi$|^classic$|^skate|^$"
+					highType = "^roller-skis$|^speed-reducers$|^brakes$|^wheels$|^accessories$|^nordixc$",
+					lowType = "^combi$|^classic$|^skate$|^$"
 				}
 				);
-			//routes.MapRoute ();
 
+			//routes.MapRoute ();
 			routes.MapRoute (
 				"Default", // Route name
 				"{controller}/{action}/{id}", // URL with parameters

@@ -6,13 +6,13 @@
     var pService = ApplicationContext.ProductService;
     ProductTypeHelper pth = new ProductTypeHelper ();
 
+    string _highType, _lowType;
     List<ProductType> types = pService.GetAncestorTypesAndSelf(Model.ProductType);
-    string productTypeName = pth[types[0]];
-    string parentTypeName = types.Count > 1 ? pth[types[1]] : null;
+    ProductTypeHelper.GetUrlShemeByProductType(types, out _highType, out _lowType);
 }
 <li class="span3">
     <div class="thumbnail span3">
-        <h3>@Html.RouteLink(Model.Name, new { controller = "Product", action = "GetProduct", parentTypeName = parentTypeName, productTypeName = productTypeName, modelName = Model.Name })</h3>
+        <h3>@Html.RouteLink(Model.Name, new { controller = "Product", action = "GetProduct", highType = _highType, lowType = _lowType, modelName = Model.Name })</h3>
             @if (!string.IsNullOrWhiteSpace (Model.ImageName))
             {
                 string path = Path.Combine("~/Content/ProductImg", Model.ImageName);

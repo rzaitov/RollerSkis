@@ -26,7 +26,7 @@
                     string ddSummenu = haveChildren ? "dropdown-submenu" : null;
 
                     <li class="@ddSummenu">
-                        @Html.RouteLink(p.ProductTypeValue.ProductTypeName, new { controller = "Product", action = "GetProducts", parentTypeName = @Pth[p.ProductTypeValue.ProductType] })
+                        @Html.RouteLink(p.ProductTypeValue.ProductTypeName, new { controller = "Product", action = "GetProducts", highType = @Pth[p.ProductTypeValue.ProductType] })
 
                         @if (haveChildren)
                         {
@@ -34,7 +34,7 @@
                                 @foreach (ProductTypeNode c in p.Children)
                                 {
                                     <li>
-                                        @Html.RouteLink(@c.ProductTypeValue.ProductTypeName, new { controller = "Product", action = "GetProducts", parentTypeName = @Pth[p.ProductTypeValue.ProductType], productTypeName = @Pth[@c.ProductTypeValue.ProductType] })
+                                        @Html.RouteLink(@c.ProductTypeValue.ProductTypeName, new { controller = "Product", action = "GetProducts", highType = @Pth[p.ProductTypeValue.ProductType], lowType = @Pth[@c.ProductTypeValue.ProductType] })
                                     </li>
                                 }
                             </ul>

@@ -35,22 +35,27 @@ namespace RollerSkis.Controllers
 		}
 
 		#region ActioMethods
-		public ActionResult GetProducts (string parentTypeName, string productTypeName = null)
+		public ActionResult GetProducts (string highType, string lowType)
 		{
-			bool isSearchWithExactType = !string.IsNullOrEmpty (productTypeName);
+			string parentTypeName, productTypeName;
+			ProductTypeHelper.GetTypeNamesFromUrlSheme(highType, lowType, out parentTypeName, out productTypeName);
+
+			bool isSearchWithExactType = !string.IsNullOrEmpty(parentTypeName);
 
 			CheckParentType (parentTypeName, productTypeName);
 
-			string typeNameKey = isSearchWithExactType ? productTypeName : parentTypeName;
-			ProductType type = ProductTypeHelper[typeNameKey];
-
+			ProductType type = ProductTypeHelper[productTypeName];
 			ViewResult view = GetProductSearchResult (type);
+
 			return view;
 		}
 
-		public ActionResult GetProduct (string parentTypeName, string productTypeName, string modelName)
+		public ActionResult GetProduct (string highType, string lowType, string modelName)
 		{
-			CheckParentType (parentTypeName, productTypeName);
+			string parentTypeName, productTypeName;
+			ProductTypeHelper.GetTypeNamesFromUrlSheme(highType, lowType, out parentTypeName, out productTypeName);
+
+			CheckParentType(parentTypeName, productTypeName);
 
 			ProductType productType = ProductTypeHelper[productTypeName];
 			return ProductView (productType, modelName);
@@ -72,12 +77,12 @@ namespace RollerSkis.Controllers
 
 		private bool IsParentValid (string parentTypeName, string productTypeName)
 		{
-			bool isSearchByTwoTypes = !string.IsNullOrEmpty (productTypeName);
+			bool isSearchByTwoTypes = !string.IsNullOrEmpty(parentTypeName);
 
 			// Проверяем действительно ли parentTypeName является родителем для productTypeName
-			ProductType parentType = ProductTypeHelper[parentTypeName];
+			ProductType productType = ProductTypeHelper[productTypeName];
 			bool isParentCorrect = !isSearchByTwoTypes
-				|| ProductService.IsValidParentTypeFor (parentType, ProductTypeHelper[productTypeName]);
+				|| ProductService.IsValidParentTypeFor(ProductTypeHelper[parentTypeName], productType);
 
 			return isParentCorrect;
 		}

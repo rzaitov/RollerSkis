@@ -57,5 +57,23 @@ namespace RollerSkis.Models
 		{
 			get { return productTypesNameMap[key]; }
 		}
+
+		public static void GetTypeNamesFromUrlSheme(string highType, string lowType, out string parentTypeName, out string productTypeName)
+		{
+			parentTypeName = highType;
+			productTypeName = lowType;
+
+			if (string.IsNullOrEmpty(lowType))
+			{
+				parentTypeName = null;
+				productTypeName = highType;
+			}
+		}
+
+		public static void GetUrlShemeByProductType (List<ProductType> typesFromHighToLow, out string hightType, out string lowType)
+		{
+			hightType = productTypesNameMap[typesFromHighToLow[0]];
+			lowType = typesFromHighToLow.Count > 1 ? productTypesNameMap[typesFromHighToLow[1]] : null;
+		}
 	}
 }

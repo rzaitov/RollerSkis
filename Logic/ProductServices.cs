@@ -193,6 +193,7 @@ WHERE
 				pt = ptv.ParentType;
 			} while (pt.HasValue);
 
+			types.Reverse();
 			return types;
 		}
 
