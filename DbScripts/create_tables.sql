@@ -1,6 +1,5 @@
 /*
 DROP TABLE dbo.Specification
-DROP TABLE dbo.ProductAttributes
 DROP TABLE dbo.Attributes
 DROP TABLE dbo.Product
 DROP TABLE dbo.ProductType
@@ -36,13 +35,6 @@ CREATE TABLE Attributes
 (
 	id INT PRIMARY KEY IDENTITY NOT NULL,
 	name VARCHAR(50) NOT NULL,
-	description NVARCHAR(500) NULL,
-)
-
--- Связывает товары и аттрибуты
-CREATE TABLE ProductAttributes
-(
-	id INT PRIMARY KEY IDENTITY NOT NULL,
-	product INT NOT NULL FOREIGN KEY REFERENCES	Product(id),
-	attribute INT NOT NULL FOREIGN KEY REFERENCES Attributes(id)	
+	treatment NVARCHAR(100) NULL,
+	product INT NOT NULL FOREIGN KEY REFERENCES	Product(id)
 )

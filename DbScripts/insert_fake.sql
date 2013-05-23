@@ -157,3 +157,16 @@ VALUES
 ('Ground Clearance','29mm/1.13”', 16),
 ('Wheel Diameter','100mm/3.9”', 16),
 ('Wheel Width','24mm/.93”', 16)
+
+INSERT INTO Attributes([name], [treatment], [product])
+VALUES
+('W83', 'slow', 29),
+('W85', 'semi slow', 29),
+
+('W10', 'Slow', 30),
+('W20', 'Medium-Slow', 30),
+('W30', 'Med-Fast', 30),
+
+('W83C', NULL, 31),
+('W94R', NULL, 31)
+
