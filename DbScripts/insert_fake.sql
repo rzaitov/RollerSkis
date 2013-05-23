@@ -63,8 +63,97 @@ VALUES
 
 INSERT INTO Specification ([name], [value], [product])
 VALUES
-('Wheelbase', '700mm/27.3”', 13),
-('Weight per pair', '1750g/3.85bs', 13),
-('Ground Clearance', '31mm/1.21”', 13),
-('Wheel Diameter', '70mm/2.73”', 13),
-('Wheel Width', '40mm Rear/31mm Front', 13)
+('Wheelbase', '684mm/26.68”', 1),
+('Weight per pair', '1.79kg/3.94lbs', 1),
+('Ground Clearance', '30.5mm/1.19”', 1),
+('Wheel Diameter', '70mm/2.73”', 1),
+('Wheel Width', '40mm Rear/31mm Front', 1),
+
+('Wheelbase', '686mm/26.75”', 2),
+('Weight per pair', '2250g /5 pounds', 2),
+('Ground Clearance', '31mm/1.2”', 2),
+('Wheel Diameter', '150mm/5.85”', 2),
+('Wheel Width', '31mm/1.2”', 2),
+
+('Wheelbase', '710mm/27.70”', 3),
+('Weight per pair', '1800g/3.96lbs', 3),
+('Ground Clearance', '31mm/1.21”', 3),
+('Wheel Diameter', '70mm/2.73”', 3),
+('Wheel Width', '40mm Rear/31mm Front', 3),
+
+('Wheelbase','700mm/27.3”', 4),
+('Weight per pair','1750g/3.85bs', 4),
+('Ground Clearance','31mm/1.21”', 4),
+('Wheel Diameter','70mm/2.73”', 4),
+('Wheel Width','40mm Rear/31mm Front', 4),
+
+('Wheelbase','684mm/26.68”', 5),
+('Weight per pair','1.8kg/3.96lbs', 5),
+('Ground Clearance','30.5 mm/1.19”', 5),
+('Wheel Diameter','70mm/2.75”', 5),
+('Wheel Width','40mm/1.56”', 5),
+
+('Wheelbase','740mm/28.87”', 6),
+('Weight per pair','2800g/6.16 pounds', 6),
+('Ground Clearance','25mm rear/31 mm front', 6),
+('Wheel Diameter','150mm front/125mm rear', 6),
+('Wheel Width','31mm/1.2 inches', 6),
+
+('Wheelbase','710mm/27.70”', 7),
+('Weight per pair','1800g/3.96lbs', 7),
+('Ground Clearance','31mm/1.21”', 7),
+('Wheel Diameter','70mm/2.73”', 7),
+('Wheel Width','40mm/1.56”', 7),
+
+('Wheelbase','749mm/29.21”', 8),
+('Weight per pair','2700g/6lbs', 8),
+('Ground Clearance','30mm/1.7”', 8),
+('Wheel Diameter','100mm', 8),
+('Wheel Width','48mm', 8),
+
+('Wheelbase','715mm/27.88”', 9),
+('Weight per pair','2500g/5.66lbs', 9),
+('Ground Clearance','32mm/1.25”', 9),
+('Wheel Diameter','100mm', 9),
+
+('Wheelbase','700mm/27.3”', 10),
+('Weight per pair','1750g/3.85bs', 10),
+('Ground Clearance','31mm/1.21”', 10),
+('Wheel Diameter','70mm/2.73”', 10),
+('Wheel Width','40mm/1.56”', 10),
+
+('Wheelbase','749mm/29.21”', 11),
+('Weight per pair','2780g/6.17lbs', 11),
+('Ground Clearance','30mm/1.7”', 11),
+('Wheel Diameter','100mm', 11),
+('Wheel Width','48mm', 11),
+
+('Wheelbase','600mm/23.4”', 12),
+('Weight per pair','1600g/3.52lbs', 12),
+('Ground Clearance','30.5mm/1.19”', 12),
+('Wheel Diameter','70mm/2.73”', 12),
+('Wheel Width','33mm/1.29”', 12),
+
+('Wheelbase','578mm/22.55”', 13),
+('Weight per pair','1900g/4.18 lbs', 13),
+('Ground Clearance','32mm/1.2”', 13),
+('Wheel Diameter',' 125mm/4.88”', 13),
+('Wheel Width','31mm/1.2”', 13),
+
+('Wheelbase',' 604mm/23.55”', 14),
+('Weight per pair',' 2000 g/4.57lbs', 14),
+('Ground Clearance','31mm/1.2”', 14),
+('Wheel Diameter',' 150mm/5.85”', 14),
+('Wheel Width',' 31mm/1.2”', 14),
+
+('Wheelbase','606mm/23.64”', 15),
+('Weight per pair',' 1700g/3.8lbs', 15),
+('Ground Clearance','31mm/1.21”', 15),
+('Wheel Diameter','100mm/3.9”', 15),
+('Wheel Width','24mm/.93”', 15),
+
+('Wheelbase','606mm/23.63”', 16),
+('Weight per pair','1630g/3.6lbs', 16),
+('Ground Clearance','29mm/1.13”', 16),
+('Wheel Diameter','100mm/3.9”', 16),
+('Wheel Width','24mm/.93”', 16)
